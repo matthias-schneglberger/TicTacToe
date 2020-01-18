@@ -58,7 +58,7 @@ public class GameThread implements Runnable {
                 break;
             }
 
-            playerX.makeMove();
+            playerX.move();
             updateEmptyFieldMonitor();
 
             if(hasWinner(mainActivity.getBoard()) != '*'){
@@ -68,7 +68,7 @@ public class GameThread implements Runnable {
 
 
 
-            playerO.makeMove();
+            playerO.move();
             updateEmptyFieldMonitor();
         }
 
@@ -87,15 +87,15 @@ public class GameThread implements Runnable {
     private void updateEmptyFieldMonitor(){
         TextView textV_emptyFields = mainActivity.findViewById(R.id.textView_fieldsFree);
 
-        int emptyFields = 0;
+        int filled = 0;
 
         for(Button b : mainActivity.buttons){
             if(b.getText().toString().equals("X") || b.getText().toString().equals("O")){
-                emptyFields++;
+                filled++;
             }
         }
 
-        textV_emptyFields.setText(String.valueOf(9-emptyFields));
+        textV_emptyFields.setText(String.valueOf(9-filled));
 
 
     }

@@ -21,7 +21,7 @@ public class Human implements Player, View.OnClickListener {
 
 
     @Override
-    public void makeMove() {
+    public void move() {
         clicked = null;
         TextView temp =(TextView) mainActivity.findViewById(R.id.textView_currentPlayer);
         temp.setText("Spieler " + marker + " ist drann");

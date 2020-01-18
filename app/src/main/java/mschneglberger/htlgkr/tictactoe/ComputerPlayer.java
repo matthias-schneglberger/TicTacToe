@@ -19,7 +19,7 @@ public class ComputerPlayer implements Player{
     }
 
     @Override
-    public void makeMove() {
+    public void move() {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
