@@ -1,5 +1,6 @@
 package mschneglberger.htlgkr.tictactoe;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -7,13 +8,14 @@ import android.widget.TextView;
 public class Human implements Player, View.OnClickListener {
     String marker;
     MainActivity mainActivity;
-    volatile Button clicked;
+    Button clicked;
+    boolean whait = true;
 
 
     public Human(String marker, MainActivity mainActivity){
         this.marker = marker;
         this.mainActivity = mainActivity;
-        clicked = null;
+
     }
 
 
@@ -25,18 +27,19 @@ public class Human implements Player, View.OnClickListener {
         temp.setText("Spieler " + marker + " ist drann");
 
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-        setupButtons();
-
-        while(clicked == null){}//WHAIT until button is clicked;
 
         shutDownButtons();
+        setupButtons();
+
+
+
+        while(whait){
+            Log.i("INFO", "makeMove: inWhile");
+        }//WHAIT until button is clicked;
+        whait = true;
+
+        shutDownButtons();
+
 
         try{
             clicked.setText(marker);
@@ -51,13 +54,14 @@ public class Human implements Player, View.OnClickListener {
 
     private void setupButtons(){
         for(Button b : mainActivity.buttons){
+            b.setOnClickListener(null);
             b.setOnClickListener(this);
             b.setClickable(false);
         }
 
 
         for(Button b : mainActivity.buttons){
-            if(b.getText().equals("")){
+            if(b.getText().equals("") || b.getText().equals(" ")){
                 b.setClickable(true);
             }
 
@@ -72,6 +76,8 @@ public class Human implements Player, View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        clicked = (Button) view;
+        this.clicked = (Button) view;
+        whait = false;
+        Log.d("test", "onClick: clicked" + this.marker);
     }
 }

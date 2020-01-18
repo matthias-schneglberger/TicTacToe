@@ -2,9 +2,14 @@ package mschneglberger.htlgkr.tictactoe;
 
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class GameThread implements Runnable {
+    String TAG = "GameThread";
+
+
     MainActivity mainActivity;
     boolean botX;
     boolean botO;
@@ -19,7 +24,6 @@ public class GameThread implements Runnable {
 
     @Override
     public void run() {
-        Looper.prepare();
 
         final String winner;
         Player playerX;
@@ -27,22 +31,26 @@ public class GameThread implements Runnable {
 
         if(!botX){
             playerX = new Human("X", mainActivity);
+            Log.i(TAG, "run: Player X Human");
         }
         else{
-            playerX = new ComputerPlayer();
+            playerX = new ComputerPlayer('X', 'O', mainActivity);
+            Log.i(TAG, "run: Player X Bot");
         }
 
 
 
         if(!botO){
             playerO = new Human("O", mainActivity);
+            Log.i(TAG, "run: Player O Human");
         }
         else{
-            playerO = new ComputerPlayer();
+            playerO = new ComputerPlayer('O', 'X', mainActivity);
+            Log.i(TAG, "run: Player O Bot");
         }
 
 
-
+        updateEmptyFieldMonitor();
         while(true){
 
             if(hasWinner(mainActivity.getBoard()) != '*'){
@@ -51,14 +59,17 @@ public class GameThread implements Runnable {
             }
 
             playerX.makeMove();
-
+            updateEmptyFieldMonitor();
 
             if(hasWinner(mainActivity.getBoard()) != '*'){
                 winner = String.valueOf(hasWinner(mainActivity.getBoard()));
                 break;
             }
-            playerO.makeMove();
 
+
+
+            playerO.makeMove();
+            updateEmptyFieldMonitor();
         }
 
         mainActivity.runOnUiThread(new Runnable() {
@@ -73,18 +84,35 @@ public class GameThread implements Runnable {
 
     }
 
+    private void updateEmptyFieldMonitor(){
+        TextView textV_emptyFields = mainActivity.findViewById(R.id.textView_fieldsFree);
+
+        int emptyFields = 0;
+
+        for(Button b : mainActivity.buttons){
+            if(b.getText().toString().equals("X") || b.getText().toString().equals("O")){
+                emptyFields++;
+            }
+        }
+
+        textV_emptyFields.setText(String.valueOf(9-emptyFields));
+
+
+    }
+
+
     private char hasWinner(char[][] board){
         char winner = '*';
 
         //ROW CHECKER
-        for(int i = 0; i <= 2; i++){
+        for(int i = 0; i < 3; i++){
             if(board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][2] != '#'){
                 winner = board[i][0];
             }
         }
 
         //COL CHECKER
-        for(int i = 0; i <= 2; i++){
+        for(int i = 0; i < 3; i++){
             if(board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[2][i] != '#'){
                 winner = board[0][i];
             }
@@ -112,7 +140,7 @@ public class GameThread implements Runnable {
             }
         }
 
-        if(noteverythingFull){
+        if(noteverythingFull && winner == '*'){
             winner = '-';
         }
 
