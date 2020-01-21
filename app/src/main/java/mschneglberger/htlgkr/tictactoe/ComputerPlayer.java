@@ -1,8 +1,6 @@
 package mschneglberger.htlgkr.tictactoe;
 
-import android.view.View;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class ComputerPlayer implements Player{
         char[][] board = mainActivity.getBoard();
 
         char[][] bestMove = null;
-        int bestValue = -1;
+        int bestValue = -2;
 
 //        int counter = 0;
         List<char[][]> possibleMoves = getAllPossibleMoves(deepCopyMatrix(board), marker);
@@ -39,18 +37,25 @@ public class ComputerPlayer implements Player{
 //            mainActivity.setBoard(tempBoard);
 //        }
 
+        if(possibleMoves.size() != 9){
+            for(char[][] tempBoard : possibleMoves){
+                int tempV = minMax(deepCopyMatrix(tempBoard), 0, false);
+                if(tempV > bestValue){
+                    bestMove = deepCopyMatrix(tempBoard);
+                    bestValue = tempV;
 
-        for(char[][] tempBoard : possibleMoves){
-            int tempV = minMax(deepCopyMatrix(tempBoard), 0, false);
-            if(tempV > bestValue){
-                bestMove = deepCopyMatrix(tempBoard);
-                bestValue = tempV;
-
-            }
+                }
 //            counter++;
+            }
+            mainActivity.setBoard(bestMove);
+        }
+        else{
+            mainActivity.setBoard(possibleMoves.get((int)(Math.random()*9)));
+
         }
 
-        mainActivity.setBoard(bestMove);
+
+
     }
 
     public int minMax(char[][] board, int depth, boolean isMaximizingPlayer){

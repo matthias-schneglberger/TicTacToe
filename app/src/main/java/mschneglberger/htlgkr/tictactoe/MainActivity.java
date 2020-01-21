@@ -161,16 +161,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void game(){
-        try{
-//            currentGamingThread.stop();
-            currentGamingThread = new Thread(new GameThread(this, playerXBot, playerOBot));
-            currentGamingThread.start();
+        if(currentGamingThread != null){
 
-            Log.d("NEW THREAD", "game: " + playerOBot + playerXBot);
         }
-        catch (Exception e){
-            Log.d("Main", "game: " + e.getStackTrace().toString());
-        }
+//            currentGamingThread.stop();
+        currentGamingThread = new Thread(new GameThread(this, playerXBot, playerOBot));
+        currentGamingThread.start();
+
+        Log.d("NEW THREAD", "game: " + playerOBot + playerXBot);
+
 
     }
 }
